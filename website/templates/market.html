@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+<h2>Markets</h2>
+
+{% for market in markets %}
+  <div style="border:3px solid black; padding:20px; margin-bottom:20px;">
+    <h2>{{ market.name }}</h2>
+
+    {% for item in market.items %}
+      <div style="border:1px solid gray; padding:10px; margin:10px;">
+        <h4>{{ item.title }}</h4>
+        <p>{{ item.description }}</p>
+        
+      </div>
+    {% endfor %}
+  </div>
+{% endfor %}
+
+<hr>
+
+<h2>Individual Items</h2>
+
+
+<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+{% for item in items %}
+  <div style="border:1px solid #ccc; padding:10px; height:150px;">
+    <h5>{{ item.title }}</h5>
+    <p style="font-size:12px;">{{ item.description }}</p>
+    <p style="font-size:12px;">{{ item.prize }}</p>
+
+
+    <form method="POST" action="{{ url_for('market.purchase_item', item_id=item.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Purchase</button>
+    </form>
+  </div>
+{% endfor %}
+</div>
+
+<h3>Your Balance</h3>
+<p><strong>Points:</strong> {{ points }}</p>
+
+<hr>
+
+<h3>Charge Points</h3>
+
+<form method="POST" action="{{ url_for('market.charge_points') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <button type="submit" name="amount" value="10">Charge RM10</button>
+    <button type="submit" name="amount" value="20">Charge RM20</button>
+    <button type="submit" name="amount" value="50">Charge RM50</button>
+    <button type="submit" name="amount" value="100">Charge RM100</button>
+</form>
+
+<hr>
+{% endblock %}

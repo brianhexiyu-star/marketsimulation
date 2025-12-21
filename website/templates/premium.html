@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Premium Features</h2>
+
+<h3>upgrade to premium</h3>
+<form method="POST" action="{{ url_for('premium.confirm_subscription') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if is_premium %}
+        <p>You are already a premium member.</p>
+    {% else %}
+        <p>Subscribe to premium for exclusive features!</p>
+        <button type="submit">Subscribe</button>
+    {% endif %}
+</form>
+{% endblock %}

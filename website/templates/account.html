@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Account Settings</h2>
+
+<p><strong>Email:</strong> {{ email }}</p>
+
+<hr>
+
+<h3>Add New Item</h3>
+
+<form method="POST" action="{{ url_for('account.add_item') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <input type="text" name="title" placeholder="Item title" required><br><br>
+    <textarea name="description" placeholder="Short description" required></textarea><br><br>
+    <input type="number" name="prize" placeholder="Prize in points" required><br><br>
+
+    <button type="submit">Add Item</button>
+</form>
+
+<hr>
+
+<h3>Your Items for Sale</h3>
+
+{% if items %}
+  {% for item in items %}
+    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+      <h4>{{ item.title }}</h4>
+      <p>{{ item.description }}</p>
+      <p>Prize: {{ item.prize }} points</p>
+      <p>buyer: {{item.buyer_email}}</p>
+      {% if not item.buyer_email %}
+      <form method="POST"
+            action="{{ url_for('account.delete_item', item_id=item.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" style="color:red;">Delete</button>
+      </form>
+    </div>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  <p>You are not selling any items.</p>
+{% endif %}
+
+{% if is_premium %}
+  <h3>Create Your Market</h3>
+
+  <form method="POST" action="{{ url_for('account.create_market') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="market_name" placeholder="Market name">
+    <button type="submit">Create Market</button>
+  </form>
+
+<hr>
+
+  <h3>Add Item to Your Market</h3>
+
+  <form method="POST" action="{{ url_for('account.add_market_item') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <input type="text" name="title" placeholder="Item title"><br>
+    <textarea name="description" placeholder="Description"></textarea><br>
+    <input type="number" name="prize" placeholder="Prize in points" required><br><br>
+
+    <select name="market_id">
+      {% for market in markets %}
+        <option value="{{ market.id }}">{{ market.name }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit">Add to Market</button>
+  </form>
+{% endif %}
+
+<hr>
+<h3>Items You Bought</h3>
+
+{% if bought_items %}
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+    {% for item in bought_items %}
+        <div style="border:1px solid #ccc; padding:10px; height:150px;">
+            <h5>{{ item.title }}</h5>
+            <p style="font-size:12px;">{{ item.description }}</p>
+            <p style="font-size:12px; color:green;">Bought from: {{ item.seller_email }}</p>
+        </div>
+    {% endfor %}
+    
+{% else %}
+    <p>You haven't bought any items yet.</p>
+{% endif %}
+{% endblock %}

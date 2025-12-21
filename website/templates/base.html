@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Flask App{% endblock %}</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        nav {
+            background-color: #222;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+
+    {% if session.get('user') %}
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout ({{ session['user'] }})</a>
+        <a href="{{ url_for('market.market_page') }}">Market</a>
+        <a href="{{ url_for('account.account_page') }}">Account</a>
+        <a href="{{ url_for('premium.subscribe_page') }}">Subscribe</a>
+    {% else %}
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+    {% endif %}
+</nav>
+
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
