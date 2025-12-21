@@ -11,10 +11,14 @@ def create_app():
     app = Flask(__name__)
 
     # Secret key for session, use env variable if set (persistent across deploys)
-    app.config['SECRET_KEY'] = "highly_secure_and_random_secret_key"  # replace with os.getenv("SECRET_KEY") in production
+    app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", secrets.token_hex(32))
 
     # PostgreSQL connection, use DATABASE_URL env variable for Vercel/cloud
-    app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://neondb_owner:npg_9SIyFxO5GVgv@ep-cool-cell-a15lc2ae-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+        "DATABASE_URL",
+        "sqlite:///users.db"  # fallback for local dev
+    )
+
     app.config['SQLALCHEMY_ECHO'] = False
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
